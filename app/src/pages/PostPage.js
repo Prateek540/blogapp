@@ -6,10 +6,14 @@ import { UserContext } from "../UserContext";
 export default function PostPage() {
   const [postInfo, setPostInfo] = useState(null);
   const { userInfo } = useContext(UserContext);
+  console.log(userInfo);
 
   const { id } = useParams();
   useEffect(() => {
-    fetch(`http://localhost:8000/post/${id}`).then((response) =>
+    fetch(`http://localhost:8000/post/${id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }).then((response) =>
       response.json().then((newPostInfo) => setPostInfo(newPostInfo))
     );
   }, [id]);
@@ -19,7 +23,7 @@ export default function PostPage() {
       <h1>{postInfo.title}</h1>
       <time>{formatISO9075(new Date(postInfo.createdAt))}</time>
       <div className="author">by @{postInfo.author.username}</div>
-      {userInfo.id === postInfo.author._id && (
+      {userInfo?.id === postInfo.author._id && (
         <div className="edit-row">
           <Link className="edit-btn" to={`/edit/${postInfo._id}`}>
             <svg
