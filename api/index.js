@@ -42,6 +42,10 @@ mongoose
     console.log(error);
   });
 
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
+
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {
