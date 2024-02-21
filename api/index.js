@@ -26,7 +26,7 @@ app.use(
   cors({
     credentials: true,
     methods: ["POST", "GET", "PUT", "DELETE"],
-    origin: "https://blogapp-app.vercel.app/",
+    origin: "https://blogapp-app.vercel.app",
   })
 );
 app.use(express.json());
