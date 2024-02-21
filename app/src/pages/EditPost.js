@@ -41,7 +41,7 @@ export default function EditPost() {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8000/post/" + id).then((response) => {
+    fetch("/post/" + id).then((response) => {
       response.json().then((postInfoResponse) => {
         setTitle(postInfoResponse.title);
         setContent(postInfoResponse.content);
@@ -60,7 +60,7 @@ export default function EditPost() {
     if (files?.[0]) {
       data.set("files", files?.[0]);
     }
-    const response = await fetch("http://localhost:8000/post/" + id, {
+    const response = await fetch("/post/" + id, {
       method: "PUT",
       body: data,
       credentials: "include",

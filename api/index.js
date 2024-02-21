@@ -22,7 +22,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../api/models/User");
 const Post = require("../api/models/Post");
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    credentials: true,
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    origin: "http://localhost:3000",
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(__dirname));

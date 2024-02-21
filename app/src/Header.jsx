@@ -5,21 +5,20 @@ import { UserContext } from "./UserContext";
 const Header = () => {
   const { setUserInfo, userInfo } = useContext(UserContext);
   useEffect(() => {
-    fetch("http://localhost:8000/profile", { credentials: "include" }).then(
-      (response) =>
-        response
-          .json()
-          .then((userInfo) => {
-            setUserInfo(userInfo);
-          })
-          .catch(() => {
-            setUserInfo(null);
-          })
+    fetch("/profile", { credentials: "include" }).then((response) =>
+      response
+        .json()
+        .then((userInfo) => {
+          setUserInfo(userInfo);
+        })
+        .catch(() => {
+          setUserInfo(null);
+        })
     );
   }, [setUserInfo]);
 
   const logoutHandler = () => {
-    fetch("http://localhost:8000/logout", {
+    fetch("/logout", {
       credentials: "include",
       method: "POST",
     });

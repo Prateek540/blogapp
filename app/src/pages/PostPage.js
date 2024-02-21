@@ -10,7 +10,7 @@ export default function PostPage() {
 
   const { id } = useParams();
   useEffect(() => {
-    fetch(`http://localhost:8000/post/${id}`, {
+    fetch(`/post/${id}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     }).then((response) =>
@@ -45,7 +45,7 @@ export default function PostPage() {
         </div>
       )}
       <div className="image">
-        <img src={`http://localhost:8000/${postInfo.cover}`} alt="" />
+        <img src={`/${postInfo.cover}`} alt="" />
       </div>
 
       <div
