@@ -7,9 +7,14 @@ const Header = () => {
   useEffect(() => {
     fetch("http://localhost:8000/profile", { credentials: "include" }).then(
       (response) =>
-        response.json().then((userInfo) => {
-          setUserInfo(userInfo);
-        })
+        response
+          .json()
+          .then((userInfo) => {
+            setUserInfo(userInfo);
+          })
+          .catch(() => {
+            setUserInfo(null);
+          })
     );
   }, [setUserInfo]);
 

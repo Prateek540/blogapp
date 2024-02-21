@@ -30,7 +30,7 @@ app.use(express.static(__dirname));
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Connected to Mongo");
   })
   .catch((error) => {
     console.log(error);
@@ -43,7 +43,18 @@ app.post("/register", async (req, res) => {
       username,
       password: bcryptjs.hashSync(password, salt),
     });
-    res.json(userDoc);
+    jwt.sign(
+      { username, id: userDoc._id },
+      process.env.SECRET,
+      {},
+      (err, token) => {
+        if (err) throw err;
+        res.cookie("token", token).json({
+          id: userDoc._id,
+          username,
+        });
+      }
+    );
   } catch (e) {
     res.status(400).json(e);
   }
@@ -75,7 +86,7 @@ app.post("/login", async (req, res) => {
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, process.env.SECRET, {}, (err, info) => {
-    if (err) throw err;
+    if (err) return res.json(null);
     res.json(info);
   });
 });
