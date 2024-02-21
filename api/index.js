@@ -22,13 +22,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../api/models/User");
 const Post = require("../api/models/Post");
 
-app.use(
-  cors({
-    credentials: true,
-    methods: ["POST", "GET", "PUT", "DELETE"],
-    origin: "https://blogapp-app.vercel.app",
-  })
-);
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(__dirname));
@@ -41,10 +35,6 @@ mongoose
   .catch((error) => {
     console.log(error);
   });
-
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
@@ -128,7 +118,7 @@ app.get("/post", async (req, res) => {
   const posts = await Post.find()
     .populate("author", ["username"])
     .sort({ createdAt: -1 })
-    .limit(5);
+    .limit(20);
   res.json(posts);
 });
 
