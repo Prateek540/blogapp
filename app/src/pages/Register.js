@@ -11,6 +11,10 @@ const Register = () => {
 
   const onRegister = async (e) => {
     e.preventDefault();
+    if (username === "" || password === "") {
+      alert("Empty username or password");
+      return;
+    }
     const response = await fetch("/register", {
       method: "POST",
       body: JSON.stringify({ username, password }),

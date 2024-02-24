@@ -37,8 +37,8 @@ mongoose
   });
 
 app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
   try {
+    const { username, password } = req.body;
     const userDoc = await User.create({
       username,
       password: bcryptjs.hashSync(password, salt),
@@ -48,8 +48,8 @@ app.post("/register", async (req, res) => {
       process.env.SECRET,
       {},
       (err, token) => {
-        if (err) throw err;
-        res.cookie("token", token).json({
+        if (err) res.status(400).json(err);
+        res.cookie("token", token).status(200).json({
           id: userDoc._id,
           username,
         });
@@ -71,8 +71,8 @@ app.post("/login", async (req, res) => {
       process.env.SECRET,
       {},
       (err, token) => {
-        if (err) throw err;
-        res.cookie("token", token).json({
+        if (err) res.status(400).json(err);
+        res.cookie("token", token).status(200).json({
           id: userDoc._id,
           username,
         });
@@ -86,13 +86,13 @@ app.post("/login", async (req, res) => {
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, process.env.SECRET, {}, (err, info) => {
-    if (err) return res.json(null);
-    res.json(info);
+    if (err) return res.status(200).json(null);
+    res.status(200).json(info);
   });
 });
 
 app.post("/logout", (req, res) => {
-  res.cookie("token", "").json("ok");
+  res.cookie("token", "").status(200).json("ok");
 });
 
 app.post("/post", uploadMiddleware.single("files"), async (req, res) => {
@@ -100,7 +100,7 @@ app.post("/post", uploadMiddleware.single("files"), async (req, res) => {
   const { path } = req.file;
   const { token } = req.cookies;
   jwt.verify(token, process.env.SECRET, {}, async (err, info) => {
-    if (err) throw err;
+    if (err) res.status(400).json(err);
     const newPost = new Post({
       title,
       summary,
@@ -109,7 +109,7 @@ app.post("/post", uploadMiddleware.single("files"), async (req, res) => {
       author: info.id,
     });
     const saved = await newPost.save();
-    if (saved) res.json(newPost);
+    if (saved) res.status(200).json(newPost);
     else res.status(400).json("Cannot create post now.");
   });
 });
@@ -119,13 +119,13 @@ app.get("/post", async (req, res) => {
     .populate("author", ["username"])
     .sort({ createdAt: -1 })
     .limit(20);
-  res.json(posts);
+  res.status(200).json(posts);
 });
 
 app.get("/post/:id", async (req, res) => {
   const { id } = req.params;
   const newPost = await Post.findById(id).populate("author", ["username"]);
-  res.json(newPost);
+  res.status(200).json(newPost);
 });
 
 app.put("/post/:id", uploadMiddleware.single("files"), async (req, res) => {
@@ -135,7 +135,7 @@ app.put("/post/:id", uploadMiddleware.single("files"), async (req, res) => {
   }
   const { token } = req.cookies;
   jwt.verify(token, process.env.SECRET, {}, async (err, info) => {
-    if (err) throw err;
+    if (err) res.status(400).json(err);
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
     const updated = await postDoc.updateOne({
@@ -144,7 +144,7 @@ app.put("/post/:id", uploadMiddleware.single("files"), async (req, res) => {
       content,
       cover: path ? path : postDoc.cover,
     });
-    if (updated) res.json(postDoc);
+    if (updated) res.status(200).json(postDoc);
     else res.status(400).json("Cannot update post now.");
   });
 });
